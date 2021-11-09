@@ -6,6 +6,20 @@ It allows to create multiple shoutboxes, and provide a block to see it.
 
 ## Installation and configuration
 
+###Composer file
+under repositories add
+```
+{
+"type": "vcs",
+"url": "https://github.com/Taoti/drupal-shoutbox.git"
+}
+```
+
+under required
+```
+"taoti/shoutbox": "dev-master",
+```
+
 ### Downloading
 Via composer 
 ```
