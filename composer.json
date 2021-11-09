@@ -1,7 +1,7 @@
 {
-    "name": "kgaut/shoutbox",
+    "name": "taoti/shoutbox",
     "type": "drupal-module",
-    "description": "Shoutbox module for drupal 8",
+    "description": "Shoutbox module for drupal 9",
     "authors": [
         {
             "name": "Kevin Gautreau",
