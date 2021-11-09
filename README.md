@@ -1,6 +1,6 @@
-# Shoutbox for drupal 8
+# Shoutbox for drupal 9
 ## Disclaimer
-This is a work in progress module for drupal 8.
+This is a work in progress module for drupal 9.
 
 It allows to create multiple shoutboxes, and provide a block to see it.
 
@@ -9,7 +9,7 @@ It allows to create multiple shoutboxes, and provide a block to see it.
 ### Downloading
 Via composer 
 ```
-composer require kgaut/shoutbox
+composer require taoti/shoutbox
 ```
 
 ### Enable the module
