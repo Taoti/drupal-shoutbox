@@ -1,4 +1,4 @@
-# Shoutbox for drupal 9
+# Shoutbox for drupal 9 or 10
 ## Disclaimer
 This is a work in progress module for drupal 9 or 10.
 
