@@ -1,6 +1,19 @@
 <?php
 
-function shoutbox_theme($existing, $type, $theme, $path) {
+/**
+ * @file
+ * Hook implementations.
+ */
+
+declare(strict_types = 1);
+
+/**
+ * Implements hook_theme().
+ *
+ * @return mixed[]
+ */
+function shoutbox_theme(): array {
+  $themes = [];
   $themes['shoutbox'] = [
     'render element' => 'elements',
     'file' => 'shoutbox.page.inc',
@@ -11,5 +24,6 @@ function shoutbox_theme($existing, $type, $theme, $path) {
     'file' => 'shout.page.inc',
     'template' => 'shout',
   ];
+
   return $themes;
 }

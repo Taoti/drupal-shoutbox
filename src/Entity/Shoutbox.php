@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Entity;
 
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Entity\EntityPublishedTrait;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\EntityOwnerInterface;
+use Drupal\user\EntityOwnerTrait;
 
 /**
  * Defines the Shoutbox entity.
@@ -40,6 +45,7 @@ use Drupal\user\UserInterface;
  *     "label" = "name",
  *     "uid" = "creator",
  *     "published" = "status",
+ *     "owner" = "creator",
  *   },
  *   links = {
  *     "canonical" = "/shoutbox/{shoutbox}",
@@ -51,69 +57,66 @@ use Drupal\user\UserInterface;
  *   field_ui_base_route = "shoutbox.settings"
  * )
  */
-class Shoutbox extends ContentEntityBase {
+class Shoutbox extends ContentEntityBase implements EntityPublishedInterface, EntityOwnerInterface {
 
-  use EntityChangedTrait;
+  use EntityChangedTrait, EntityPublishedTrait, EntityOwnerTrait;
+
+  /**
+   * Gets the name of the Shoutbox.
+   *
+   * @return string
+   *   The name of the Shoutbox.
+   */
+  public function getName(): string {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * Sets the name of the Shoutbox.
+   *
+   * @param string $name
+   *   The name of the Shoutbox.
+   *
+   * @return static
+   *   The caller entity itself.
+   */
+  public function setName(string $name): static {
+    $this->set('name', $name);
+    return $this;
+  }
+
+  /**
+   * Gets the entity creation timestamp.
+   *
+   * @return int
+   *   Creation timestamp of the entity.
+   */
+  public function getCreatedTime(): int {
+    return intval($this->get('created')->value);
+  }
+
+  /**
+   * Sets the entity creation timestamp.
+   *
+   * @param int $timestamp
+   *   The entity creation timestamp.
+   *
+   * @return static
+   *   The caller entity itself.
+   */
+  public function setCreatedTime(int $timestamp): static {
+    $this->set('created', $timestamp);
+    return $this;
+  }
+
   /**
    * {@inheritdoc}
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
     $values += [
-      'creator' => \Drupal::currentUser()->id(),
+      'creator' => self::getDefaultEntityOwner(),
     ];
-  }
-
-  public function getName() {
-    return $this->get('name')->value;
-  }
-
-  public function setName($name) {
-    $this->set('name', $name);
-    return $this;
-  }
-
-  public function getCreatedTime() {
-    return $this->get('created')->value;
-  }
-
-  public function setCreatedTime($timestamp) {
-    $this->set('created', $timestamp);
-    return $this;
-  }
-
-  public function getOwner() {
-    return $this->get('creator')->entity;
-  }
-
-  public function getOwnerId() {
-    return $this->get('creator')->target_id;
-  }
-
-  public function setOwnerId($uid) {
-    $this->set('creator', $uid);
-    return $this;
-  }
-
-  public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
-    return $this;
-  }
-
-  public function isPublished() {
-    return (bool) $this->get('status')->value;
-  }
-
-  public function setPublished($published = NULL) {
-    if ($published !== NULL) {
-      @trigger_error('The $published parameter is deprecated since version 8.3.x and will be removed in 9.0.0.', E_USER_DEPRECATED);
-      $value = (bool) $published;
-    }
-    else {
-      $value = TRUE;
-    }
-    $this->set('status', $value);
-    return $this;
   }
 
   /**
@@ -121,13 +124,8 @@ class Shoutbox extends ContentEntityBase {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
-
-    $fields['creator'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Creator'))
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+    $fields += self::publishedBaseFieldDefinitions($entity_type);
+    $fields += self::ownerBaseFieldDefinitions($entity_type);
 
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
@@ -137,12 +135,6 @@ class Shoutbox extends ContentEntityBase {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
-
-    $fields['status'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Published'))
-      ->setDefaultValue(TRUE)
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))

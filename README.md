@@ -1,6 +1,6 @@
 # Shoutbox for drupal 9
 ## Disclaimer
-This is a work in progress module for drupal 9.
+This is a work in progress module for drupal 9 or 10.
 
 It allows to create multiple shoutboxes, and provide a block to see it.
 

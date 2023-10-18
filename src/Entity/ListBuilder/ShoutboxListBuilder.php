@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Entity\ListBuilder;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -17,6 +19,7 @@ class ShoutboxListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
+    $header = [];
     $header['id'] = $this->t('ID');
     $header['name'] = $this->t('Name');
     $header['shouts'] = $this->t('Messages');
@@ -27,7 +30,9 @@ class ShoutboxListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var \Drupal\shoutbox\Entity\Shoutbox $entity */
+    $row = [];
+
+    /** @var \Drupal\shoutbox\Entity\Shoutbox $entity */
     $row['id'] = $entity->id();
     $row['name'] = Link::createFromRoute(
       $entity->label(),

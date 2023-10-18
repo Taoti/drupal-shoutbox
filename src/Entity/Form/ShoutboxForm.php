@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Entity\Form;
 
 use Drupal\Component\Datetime\TimeInterface;
@@ -45,24 +47,9 @@ class ShoutboxForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
-    // Instantiates this form class.
-    return new static(
-      $container->get('entity.repository'),
-      $container->get('entity_type.bundle.info'),
-      $container->get('datetime.time'),
-      $container->get('current_user')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var \Drupal\shoutbox\Entity\Shoutbox $entity */
+    /** @var \Drupal\shoutbox\Entity\Shoutbox $entity */
     $form = parent::buildForm($form, $form_state);
-
-    $entity = $this->entity;
 
     return $form;
   }
@@ -88,6 +75,19 @@ class ShoutboxForm extends ContentEntityForm {
         ]));
     }
     $form_state->setRedirect('entity.shout.collection');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    // Instantiates this form class.
+    return new static(
+      $container->get('entity.repository'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time'),
+      $container->get('current_user')
+    );
   }
 
 }

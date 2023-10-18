@@ -1,4 +1,26 @@
 services:
+  shoutbox.storage.shout:
+    class: Drupal\Core\Entity\EntityStorageInterface
+    factory: ['@entity_type.manager', 'getStorage']
+    arguments: ['shout']
+
+  shoutbox.storage.shoutbox:
+    class: Drupal\Core\Entity\EntityStorageInterface
+    factory: ['@entity_type.manager', 'getStorage']
+    arguments: ['shoutbox']
+
+  shoutbox.viewbuilder.shout:
+    class: Drupal\Core\Entity\EntityViewBuilderInterface
+    factory: ['@entity_type.manager', 'getViewBuilder']
+    arguments: ['shout']
+
+  shoutbox.viewbuilder.shoutbox:
+    class: Drupal\Core\Entity\EntityViewBuilderInterface
+    factory: ['@entity_type.manager', 'getViewBuilder']
+    arguments: ['shoutbox']
+
   shoutbox.service:
     class: Drupal\shoutbox\ShoutboxService
-    arguments: ['@entity_type.manager']
+    arguments:
+      - '@shoutbox.storage.shout'
+      - '@shoutbox.storage.shoutbox'

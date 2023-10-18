@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityViewBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\shoutbox\Entity\Shoutbox;
+use Drupal\shoutbox\ShoutboxService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a 'ShoutboxBlock' block.
@@ -16,14 +22,28 @@ use Drupal\shoutbox\Entity\Shoutbox;
  *  admin_label = @Translation("Shoutbox"),
  * )
  */
-class ShoutboxBlock extends BlockBase {
+class ShoutboxBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The Shoutbox service instance.
+   */
+  protected ShoutboxService $shoutbox;
+
+  /**
+   * The view builder service instance for the shoutbox entity type.
+   */
+  protected EntityViewBuilderInterface $viewBuilder;
+
+  /**
+   * The shoutbox entity storage service instance.
+   */
+  protected EntityStorageInterface $shoutboxStorage;
 
   /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
-          ] + parent::defaultConfiguration();
+    return [] + parent::defaultConfiguration();
   }
 
   /**
@@ -34,7 +54,7 @@ class ShoutboxBlock extends BlockBase {
       '#type' => 'select',
       '#title' => $this->t('Shoutbox to use'),
       '#default_value' => $this->configuration['shoutbox'],
-      '#options' => \Drupal::service('shoutbox.service')->getShoutboxAsArray(),
+      '#options' => $this->shoutbox->getShoutboxAsArray(),
       '#weight' => '0',
       'required' => TRUE,
     ];
@@ -49,6 +69,9 @@ class ShoutboxBlock extends BlockBase {
     $this->configuration['shoutbox'] = $form_state->getValue('shoutbox');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function blockAccess(AccountInterface $account) {
     return AccessResult::allowedIfHasPermission($account, 'view shoutbox');
   }
@@ -57,10 +80,20 @@ class ShoutboxBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
+    $shoutbox = $this->shoutboxStorage->load($this->configuration['shoutbox']);
+    return $this->viewBuilder->view($shoutbox);
+  }
 
-    $viewBuilder = \Drupal::entityTypeManager()->getViewBuilder('shoutbox');
-    $shoutbox = Shoutbox::load($this->configuration['shoutbox']);
-    return $viewBuilder->view($shoutbox);
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = new static($configuration, $plugin_id, $plugin_definition);
+    $instance->shoutbox = $container->get('shoutbox.service');
+    $instance->viewBuilder = $container->get('shoutbox.viewbuilder.shoutbox');
+    $instance->shoutboxStorage = $container->get('shoutbox.storage.shoutbox');
+
+    return $instance;
   }
 
 }

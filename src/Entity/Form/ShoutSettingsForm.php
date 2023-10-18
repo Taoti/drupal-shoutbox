@@ -1,51 +1,37 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Entity\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class ShoutSettingsForm.
+ * Settings form for Shout entities.
  *
  * @ingroup shoutbox
  */
 class ShoutSettingsForm extends FormBase {
 
   /**
-   * Returns a unique string identifying the form.
-   *
-   * @return string
-   *   The unique string identifying the form.
+   * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'shout_settings';
   }
 
   /**
-   * Form submission handler.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
+   * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     // Empty implementation of the abstract submit class.
   }
 
   /**
-   * Defines the settings form for Shout entities.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form.
-   *
-   * @return array
-   *   Form definition array.
+   * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $form['shout_settings']['#markup'] = 'Settings form for Shout entities. Manage field settings here.';
     return $form;
   }

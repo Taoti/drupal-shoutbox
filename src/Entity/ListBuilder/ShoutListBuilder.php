@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\shoutbox\Entity\ListBuilder;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -17,6 +19,7 @@ class ShoutListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
+    $header = [];
     $header['id'] = $this->t('Shout ID');
     $header['shoutbox'] = $this->t('Shoutbox');
     $header['author'] = $this->t('Author');
@@ -28,7 +31,9 @@ class ShoutListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var \Drupal\shoutbox\Entity\Shout $entity */
+    $row = [];
+
+    /** @var \Drupal\shoutbox\Entity\Shout $entity */
     $shoutbox = $entity->getShoutbox();
     $author = $entity->getOwner();
     $row['id'] = $entity->id();

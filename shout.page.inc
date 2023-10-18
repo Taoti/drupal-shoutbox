@@ -7,20 +7,21 @@
  * Page callback for Shout entities.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Render\Element;
-use Drupal\file\Entity\File;
 
 /**
  * Prepares variables for Shout templates.
  *
  * Default template: shout.html.twig.
  *
- * @param array $variables
+ * @param mixed[] $variables
  *   An associative array containing:
  *   - elements: An associative array containing the user information and any
  *   - attributes: HTML attributes for the containing element.
  */
-function template_preprocess_shout(array &$variables) {
+function template_preprocess_shout(array &$variables): void {
   // Fetch Shout Entity Object.
   /** @var \Drupal\shoutbox\Entity\Shout $shout */
   $shout = $variables['elements']['#shout'];
@@ -34,7 +35,7 @@ function template_preprocess_shout(array &$variables) {
   $variables['author'] = [
     'id' => $author->id(),
     'name' => $author->getDisplayName(),
-    'url' => $author->toUrl()->toString()
+    'url' => $author->toUrl()->toString(),
   ];
   if ($author->hasField('user_picture') && $avatar = $author->get('user_picture')->referencedEntities()[0]) {
     $variables['author']['avatar'] = [
