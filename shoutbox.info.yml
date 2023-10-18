@@ -1,6 +1,6 @@
 name: 'Shoutbox'
 type: module
-description: 'Taoti's fork of the Shoutbox module for Drupal 9 / 10'
+description: Taoti's fork of the Shoutbox module for Drupal 9 or 10
 core_version_requirement: ^9 || ^10
 package: 'Shoutbox'
 
