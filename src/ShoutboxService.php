@@ -11,11 +11,9 @@ use Drupal\shoutbox\Entity\Shoutbox;
 class ShoutboxService {
 
   /**
-   * Drupal\Core\Entity\EntityManagerInterface definition.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    */
-  protected $entityManager;
+  protected EntityTypeManagerInterface $entityManager;
 
   /**
    * Constructs a new ShoutboxService object.
